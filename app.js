@@ -1,25 +1,23 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var session = require("express-session");
-var passport = require("passport");
-var LocalStrategy = require("passport-local").Strategy;
-var multer = require("multer");
-var upload = multer({
-  dest: './uploads'
-})
-var flash = require("connect-flash");
-var mongodb = require("mongodb");
-var mongoose = require("mongoose");
-var db = mongoose.connection;
-var expressMessages = require("express-messages");
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const session = require("express-session");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const flash = require("connect-flash");
+const mongodb = require("mongodb");
+const mongoose = require("mongoose");
+const db = mongoose.connection;
+const expressMessages = require("express-messages");
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
-var app = express();
+
+const indexRouter = require('./routes/index');
+const usersRouter = require('./routes/users');
+
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -49,7 +47,7 @@ app.use(function (req, res, next) {
 })
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
