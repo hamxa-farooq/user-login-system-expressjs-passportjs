@@ -39,12 +39,11 @@ app.use(session({
 // Passport
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use(flash());
 app.use(function (req, res, next) {
   res.locals.messages = expressMessages(req, res);
   next();
-})
+});
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
