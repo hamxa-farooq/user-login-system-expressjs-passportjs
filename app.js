@@ -10,7 +10,8 @@ const mongodb = require("mongodb");
 const mongoose = require("mongoose");
 const db = mongoose.connection;
 const expressMessages = require("express-messages");
-require('./config/passport/passportConfig')
+require('./config/passport/passportConfig');
+require('./config/db/connection')
 
 
 const indexRouter = require('./routes/index');

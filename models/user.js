@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-mongoose.connect('mongodb://localhost/nodeauth');
-
 const db = mongoose.connection;
-console.log('the connection to db has been opened');
 
 const UserSchema = mongoose.Schema({
   username: {
@@ -12,7 +9,7 @@ const UserSchema = mongoose.Schema({
     index: true,
   },
   password: {
-    type: String
+    type: String,
   },
   email: {
     type: String,
@@ -21,7 +18,7 @@ const UserSchema = mongoose.Schema({
     type: String,
   },
   profileImage: {
-    type: String
+    type: String,
   }
 });
 

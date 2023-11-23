@@ -1,6 +1,6 @@
-const passport = require("passport");
+const passport = require('passport');
 
-const localStrategy = require("./passportStrategies/localStrategy");
+const localStrategy = require('./passportStrategies/localStrategy');
 
 passport.use('login', localStrategy.loginStrategyWithPassport);
 
