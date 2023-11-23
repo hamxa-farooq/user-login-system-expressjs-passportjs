@@ -1,31 +1,24 @@
-var express = require('express');
-var router = express.Router();
-const { validationResult, body } = require('express-validator');
+const express = require('express');
+const router = express.Router();
+const passport = require('passport');
 
-var multer = require("multer");
-var upload = multer({
+const multer = require("multer");
+const upload = multer({
   dest: './uploads'
 })
 
 const validateUserRegister = require('../helpers/validation');
-const checkValidationErrors = require('../middlewares/checkValidationErrors')
+const checkValidationErrors = require('../middlewares/checkValidationErrors');
+const authenticateRequest = require('../middlewares/authenticateRequest')
 const User = require('../models/user');
 
-
-/* GET users listing. */
-router.get('/', (req, res, next) => {
-  res.send('respond with a resource');
-});
 
 router.get('/register', (req, res, next) =>{
   res.render('register', {title: 'Register'});
 })
 
-router.get('/login', (req, res, next) =>{
-  res.render('login', {title: 'Login'});
-})
-
 router.post('/register', upload.single('profileImage'), validateUserRegister(),  checkValidationErrors, (req, res) => {
+
   const name = req.body.name;
   const email = req.body.email;
   const username = req.body.username;
@@ -48,6 +41,28 @@ router.post('/register', upload.single('profileImage'), validateUserRegister(), 
   res.location('/');
   res.redirect('/');
 
+});
+
+router.get('/login', async (req, res, next) =>{
+  res.render('login', {title: 'Login'});
 })
+
+router.post('/login', passport.authenticate('local', {
+  successRedirect: '/',
+  failureRedirect: '/user/login'
+}));
+
+router.get('/', authenticateRequest, (req, res, next) => {
+  console.log('req.user', res.locals)
+  res.send('respond with a resource');
+});
+
+router.get('/logout', function(req, res, next) {
+  req.logout(function(err) {
+    if (err) { return next(err); }
+    req.flash('success', 'you have been logged out');
+    res.redirect('/user/login');
+  });
+});
 
 module.exports = router;

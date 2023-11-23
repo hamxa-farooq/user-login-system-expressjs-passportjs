@@ -1,12 +1,12 @@
 extends layout
 block content
-  h2.page-header Register
+  h2.page-header Login
   p Please login using the form below
-  form(method='post', action="/user/register", enctype='multipart/form-data')
+  form(method='post', action="/user/login")
     .form-group
       label Username
       input.form-control(name='username', type='text', placeholder='Enter Username')
     .form-group
       label Password
       input.form-control(name='password', type='password', placeholder='Enter Password')
-  input.btn.btn-primary(type='submit', name='submit', value='Login')
+    input.btn.btn-primary(type='submit', name='submit', value='Login')
