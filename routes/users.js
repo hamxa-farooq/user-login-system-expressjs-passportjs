@@ -19,28 +19,26 @@ router.get('/register', (req, res, next) =>{
 
 router.post('/register', upload.single('profileImage'), validateUserRegister(),  checkValidationErrors, (req, res) => {
 
-  const name = req.body.name;
-  const email = req.body.email;
-  const username = req.body.username;
-  const password = req.body.password;
-  const password2 = req.body.password2;
-  const profileImage = req.file.filename;
+  if(!User.isUserInDatabase(req.body.username)) {
+    // Create a document by instanciating the model
+    const newUser = new User({
+      name: req.body.name,
+      email: req.body.email,
+      username: req.body.username,
+      password: req.body.password,
+      profileImage: req.file.filename,
+    });
 
-  // Create a document by instanciating the model
-  const newUser = new User({
-    name,
-    email,
-    username,
-    password,
-    profileImage,
-  });
+    User.createUser(newUser);
 
-  User.createUser(newUser);
+    req.flash('success', 'You are registered and can login now');
+    res.location('/');
+    res.redirect('/');
 
-  req.flash('success', 'You are registered and can login now');
-  res.location('/');
-  res.redirect('/');
-
+  } else {
+    req.flash('error', 'The username already exists');
+    res.redirect('/user/register')
+  }
 });
 
 router.get('/login', async (req, res, next) =>{
