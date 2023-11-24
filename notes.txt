@@ -1,0 +1,79 @@
+EXPRESS SESSION
+
+NOTE Session data is not saved in the cookie itself, just the session ID. Session data is stored server-side.
+
+NOTE Since version 1.5.0, the cookie-parser middleware no longer needs to be used for this module to work.
+This module now directly reads and writes cookies on req/res. Using cookie-parser may result in issues if
+the secret is not the same between this module and cookie-parser.
+
+WARNING The default server-side session storage, MemoryStore, is purposely not designed for a production
+environment. It will leak memory under most conditions, does not scale past a single process, and is
+meant for debugging and developing.
+
+--------------------------------------------------------------------------------------------------
+
+RESAVE
+Forces the session to be saved back to the session store, even if the session was never modified during
+the request. Depending on your store this may be necessary, but it can also create race conditions where
+a client makes two parallel requests to your server and changes made to the session in one request may
+get overwritten when the other request ends, even if it made no changes (this behavior also depends on
+what store you’re using).
+
+The default value is true, but using the default has been deprecated, as the default will change in the
+future. Please research into this setting and choose what is appropriate to your use-case. Typically,
+you’ll want false.
+
+How do I know if this is necessary for my store? The best way to know is to check with your store if it
+implements the touch method. If it does, then you can safely set resave: false. If it does not implement
+the touch method and your store sets an expiration date on stored sessions, then you likely need
+resave: true.
+
+--------------------------------------------------------------------------------------------------
+
+SAVEUNITIALIZED
+
+Forces a session that is “uninitialized” to be saved to the store. A session is uninitialized when it is
+new but not modified. Choosing false is useful for implementing login sessions, reducing server storage
+usage, or complying with laws that require permission before setting a cookie. Choosing false will also
+help with race conditions where a client makes multiple parallel requests without a session.
+
+The default value is true, but using the default has been deprecated, as the default will change in the
+future. Please research into this setting and choose what is appropriate to your use-case.
+
+NOTE if you are using Session in conjunction with PassportJS, Passport will add an empty Passport object
+to the session for use after a user is authenticated, which will be treated as a modification to the
+session, causing it to be saved. This has been fixed in PassportJS 0.3.0
+
+---------------------------------------------------------------------------------------------------
+
+SECRET
+
+Required option
+
+This is the secret used to sign the session ID cookie. This can be either a string for a single secret,
+or an array of multiple secrets. If an array of secrets is provided, only the first element will be used
+to sign the session ID cookie, while all the elements will be considered when verifying the signature in
+requests. The secret itself should be not easily parsed by a human and would best be a random set of
+characters. A best practice may include:
+
+  1. The use of environment variables to store the secret, ensuring the secret itself does not exist in
+      yourrepository.
+
+  2. Periodic updates of the secret, while ensuring the previous secret is in the array.
+
+Using a secret that cannot be guessed will reduce the ability to hijack a session to only guessing the
+session ID (as determined by the genid option).
+
+Changing the secret value will invalidate all existing sessions. In order to rotate the secret without
+invalidating sessions, provide an array of secrets, with the new secret as first element of the array,
+and including previous secrets as the later elements.
+
+----------------------------------------------------------------------------------------------------
+
+STORE
+
+The session store instance, defaults to a new MemoryStore instance.
+
+----------------------------------------------------------------------------------------------------
+
+
