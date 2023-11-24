@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/nodeauth');
+const connection = mongoose.connect('mongodb://localhost/nodeauth');
 
 mongoose.connection.on('connecting', () => {
   console.log('making initial connection with mongoDB server');
@@ -24,8 +24,10 @@ mongoose.connection.on('disconnected', () => {
   console.log('connection to mongoDB server lost due to database server crash, network connectivity issues or explicitly closing connection');
 });
 
-mongoose.connection.on('connected', () => {
+mongoose.connection.on('reconnected', () => {
   console.log('mongoDB successfully reconnected after losing connection to mongoDB server');
 });
+
+module.exports = connection;
 
 

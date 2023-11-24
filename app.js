@@ -8,8 +8,9 @@ const passport = require("passport");
 const flash = require("connect-flash");
 const mongodb = require("mongodb");
 const mongoose = require("mongoose");
-const db = mongoose.connection;
 const expressMessages = require("express-messages");
+
+const store = require('./config/mongoStore/storeConfig')
 require('./config/passport/passportConfig');
 require('./config/db/connection')
 
@@ -29,15 +30,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'))); //use public as static folder
 
-
 // Handle Sessions
 app.use(session({
   secret: "secret",
+  store: store,
   saveUninitialized: true,
   resave: true
-}))
+}));
 
-app.use(passport.authenticate('session'));
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(flash());
 app.use(function (req, res, next) {
   res.locals.messages = expressMessages(req, res);
