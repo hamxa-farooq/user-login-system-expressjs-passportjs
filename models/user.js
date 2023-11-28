@@ -29,17 +29,16 @@ module.exports.getUserById = async (id) => {
   return user;
 }
 
-module.exports.isUserInDatabase = async (username) => {
-  const user = await User.findOne({username});
+module.exports.isUserInDatabase = async (query) => {
+  const user = await User.findOne(query);
   return !!(user);
 }
 
-module.exports.createUser = function(newUser, callback) {
-  bcrypt.genSalt(10, (err, salt) => {
-    bcrypt.hash(newUser.password, salt, (err, hash) => {
+module.exports.createUser = async (newUser, callback) => {
+  bcrypt.genSalt(10, async (err, salt) => {
+    bcrypt.hash(newUser.password, salt, async (err, hash) => {
       newUser.password = hash;
-      newUser.save(newUser, callback);
+      await newUser.save();
     })
   })
-  newUser.save(callback)
 }

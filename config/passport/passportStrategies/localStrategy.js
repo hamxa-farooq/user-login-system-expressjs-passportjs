@@ -3,10 +3,11 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 
 const User = require('../../../models/user');
+const chalk = require('chalk');
 
 
-const loginStrategyWithPassport = passport.use(new LocalStrategy(async function verify(username, password, done) {
-  console.log('passport use ran');
+const loginStrategyWithPassport = new LocalStrategy(async function verify(username, password, done) {
+
   try {
     const user = await User.findOne({username});
     if(!user) {
@@ -22,7 +23,30 @@ const loginStrategyWithPassport = passport.use(new LocalStrategy(async function 
   } catch(err) {
     return done(err);
   }
-}));
+});
+
+const signUpStrategyWithPassport = new LocalStrategy(
+  {
+    usernameField: 'username',
+    passwordField: 'password',
+    passReqToCallback: true,
+  },
+  async (req, username, password, done) => {
+    try {
+      const newUser = new User({
+        name: req.body.name,
+        email: req.body.email,
+        username: req.body.username,
+        password: req.body.password,
+        profileImage: req.file.filename,
+      });
+      User.createUser(newUser);
+      return done(null, newUser);
+    } catch(err) {
+      done(err);
+    }
+  }
+)
 
 
 // Done callback below will place user info in session. user info is passed here from verify callback
@@ -46,4 +70,5 @@ passport.deserializeUser(async(userInfoFromSession, done) => {
 
 module.exports = {
   loginStrategyWithPassport,
+  signUpStrategyWithPassport,
 }
